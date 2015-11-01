@@ -56,17 +56,17 @@ var Login_service = function() {
         return $.ajax({url: request});
     }
     
-    this.search_transactions = function(visit_type_id,personnel_id,visit_date_from,visit_date_to,branch_code){
+    this.search_transactions = function(visit_type_id,visit_date_from,visit_date_to,branch_code){
     	var request = url + "reports/search_transactions/"+visit_type_id+"/"+personnel_id+"/"+visit_date_from+"/"+visit_date_to+"/"+branch_code;
 
         return $.ajax({url: request});
     }
-    this.search_debtors = function(visit_type_id,personnel_id,visit_date_from,visit_date_to,branch_code){
+    this.search_debtors = function(visit_type_id,visit_date_from,visit_date_to,branch_code){
     	var request = url + "reports/search_debtors/"+visit_type_id+"/"+personnel_id+"/"+visit_date_from+"/"+visit_date_to+"/"+branch_code;
 
         return $.ajax({url: request});
     }
-    this.search_cash_reports = function(visit_type_id,personnel_id,visit_date_from,visit_date_to,branch_code){
+    this.search_cash_reports = function(visit_type_id,visit_date_from,visit_date_to,branch_code){
     	var request = url + "reports/search_cash_reports/"+visit_type_id+"/"+personnel_id+"/"+visit_date_from+"/"+visit_date_to+"/"+branch_code;
 
         return $.ajax({url: request});
@@ -266,7 +266,7 @@ $(document).on("submit","form#transaction_search",function(e)
 	
 	//get form values
 	var visit_type_id = $("select[name=visit_type_id]").val();
-	var personnel_id = $("select[name=personnel_id]").val();
+
 	var visit_date_from = $("input[name=visit_date_from]").val();
 	var visit_date_to = $("input[name=visit_date_to]").val();
 	var branch_code = $("select[name=branch_code]").val();
@@ -281,7 +281,7 @@ $(document).on("submit","form#transaction_search",function(e)
 		visit_date_from = "_";
 	}
 
-	service.search_transactions(visit_type_id,personnel_id,visit_date_from,visit_date_to,branch_code).done(function (employees) {
+	service.search_transactions(visit_type_id,visit_date_from,visit_date_to,branch_code).done(function (employees) {
 	var data = jQuery.parseJSON(employees);
 
 	$("#transaction_reports_view").html(data).fadeIn( "slow");//initialize datepicker
@@ -346,7 +346,7 @@ $(document).on("submit","form#debtors_search",function(e)
 	
 	//get form values
 	var visit_type_id = $("select[name=visit_type_id]").val();
-	var personnel_id = $("select[name=personnel_id]").val();
+
 	var visit_date_from = $("input[name=visit_date_from]").val();
 	var visit_date_to = $("input[name=visit_date_to]").val();
 	var branch_code = $("select[name=branch_code]").val();
@@ -361,7 +361,7 @@ $(document).on("submit","form#debtors_search",function(e)
 		visit_date_from = "_";
 	}
 
-	service.search_debtors(visit_type_id,personnel_id,visit_date_from,visit_date_to,branch_code).done(function (employees) {
+	service.search_debtors(visit_type_id,visit_date_from,visit_date_to,branch_code).done(function (employees) {
 	var data = jQuery.parseJSON(employees);
 
 	$("#transaction_reports_view").html(data).fadeIn( "slow");
@@ -403,7 +403,7 @@ $(document).on("submit","form#cash_search",function(e)
 	
 	//get form values
 	var visit_type_id = $("select[name=visit_type_id]").val();
-	var personnel_id = $("select[name=personnel_id]").val();
+
 	var visit_date_from = $("input[name=visit_date_from]").val();
 	var visit_date_to = $("input[name=visit_date_to]").val();
 	var branch_code = $("select[name=branch_code]").val();
@@ -418,7 +418,7 @@ $(document).on("submit","form#cash_search",function(e)
 		visit_date_from = "_";
 	}
 
-	service.search_cash_reports(visit_type_id,personnel_id,visit_date_from,visit_date_to,branch_code).done(function (employees) {
+	service.search_cash_reports(visit_type_id,visit_date_from,visit_date_to,branch_code).done(function (employees) {
 	var data = jQuery.parseJSON(employees);
 
 	$("#transaction_reports_view").html(data).fadeIn( "slow");
