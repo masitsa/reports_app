@@ -13,12 +13,10 @@ var Login_service = function() {
     this.findById = function(id) {
         return $.ajax({url: url + "/" + id});
     }
-
-   
+	
     this.login_member = function(personnel_username, personnel_password) {
-		var request = url + "login/login_member/" + personnel_username + "/" + personnel_password;
-  
-        return $.ajax({url: request});
+		var request = url + "login/login_member";
+        return $.ajax({type:'POST', url: request, data:{personnel_username: personnel_username, personnel_password: personnel_password}});
     }
     this.get_member_details = function(member_no){
     	var request = url + "login/get_member_information/" + member_no;
@@ -67,7 +65,7 @@ var Login_service = function() {
         return $.ajax({url: request});
     }
     this.search_cash_reports = function(visit_type_id,visit_date_from,visit_date_to,branch_code){
-    	var request = url + "reports/search_cash_reports/"+visit_type_id+"/"+personnel_id+"/"+visit_date_from+"/"+visit_date_to+"/"+branch_code;
+    	var request = url + "reports/search_cash_reports/"+visit_type_id+"/"+visit_date_from+"/"+visit_date_to+"/"+branch_code;
 
         return $.ajax({url: request});
     }
@@ -133,8 +131,6 @@ $(document).ready(function(){
 	$( ".main-nav ul li#profile" ).css( "display", 'none' );
 	$( ".main-nav ul li#cpd_live" ).css( "display", 'none' );
 	$( ".user-nav ul li#my_account" ).css( "display", 'none' );
-	
-	automatic_login();
 });
 
 function get_profile_details()
@@ -163,45 +159,6 @@ function get_profile_details()
 	});
 }
 
-//automatic login
-function automatic_login()
-{
-	$( "#loader-wrapper" ).removeClass( "display_none" );
-
-	
-	var service = new Login_service();
-	service.initialize().done(function () {
-		console.log("Service initialized");
-	});
-	
-	//get member's credentials
-	var member_no = window.localStorage.getItem("personnel_username");
-	var password = window.localStorage.getItem("personnel_password");
-	
-	service.login_member(member_no, password).done(function (employees) {
-		var data = jQuery.parseJSON(employees);//alert(email+' '+password);
-		
-		if(data.message == "success")
-		{
-			//display login items
-			$( ".main-nav ul li#pro_social" ).css( "display", 'inline-block' );
-			$( ".main-nav ul li#profile" ).css( "display", 'inline-block' );
-			$( ".main-nav ul li#cpd_live" ).css( "display", 'inline-block' );
-			// $( "#first_page" ).css( "display_none", 'inline-block' );
-			// $( "#logged_in_page" ).css( "display", 'inline-block' );
-			$( "#user_logged_in" ).html( '<h4>Welcome back Martin</h4>' );
-			$( "#login_icon" ).html( '<a href="events.html" class="close-popup"><img src="images/icons/white/toogle.png" alt="" title="" onClick="get_event_items()"/><span>Events</span></a>' );
-			$( "#profile_icon" ).html( '<li><a href="my-profile.html" class="close-popup"><img src="images/icons/white/user.png" alt="" title="" onClick="get_profile_details()"/><span>Profile</span></a></li>' );
-		}
-		else
-		{
-			$("#response").html('<div class="alert alert-danger center-align">'+data.result+'</div>').fadeIn( "slow");
-		}
-		
-		$( "#loader-wrapper" ).addClass( "display_none" );
-	});
-}
-
 
 //Login member
 $(document).on("submit","form#login_member",function(e)
@@ -224,7 +181,7 @@ $(document).on("submit","form#login_member",function(e)
 		var username = $("input[name=personnel_username]").val();
 		var password = $("input[name=personnel_password]").val();
 		
-			service.login_member(username, password).done(function (employees) {
+		service.login_member(username, password).done(function (employees) {
 			var data = jQuery.parseJSON(employees);
 			
 			if(data.message == "success")
@@ -235,7 +192,9 @@ $(document).on("submit","form#login_member",function(e)
 				var first_name = data_two.member_first_name;
 				$( "#user_logged_in" ).html( '<h4>Welcome back '+first_name+'</h4>' );
 				});
-	
+				
+				window.localStorage.setItem("personnel_username", username);
+				window.localStorage.setItem("personnel_password", password);
 				window.location.href = "home.html";
 			}
 			else
